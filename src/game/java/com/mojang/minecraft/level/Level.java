@@ -1165,6 +1165,8 @@ public class Level implements Serializable {
 					}
 					e.readFrom(in);
 					this.addEntity(e);
+				} else {
+					in.skipBytes(in.readInt());
 				}
 			}
 		} catch (java.io.EOFException e) {
