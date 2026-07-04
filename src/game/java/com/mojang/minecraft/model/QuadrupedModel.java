@@ -1,7 +1,5 @@
 package com.mojang.minecraft.model;
 
-import com.mojang.minecraft.character.Cube;
-
 public final class QuadrupedModel extends BaseModel {
 	private Cube head = new Cube(0, 0);
 	private Cube body;

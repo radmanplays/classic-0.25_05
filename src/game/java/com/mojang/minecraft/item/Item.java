@@ -8,6 +8,7 @@ import com.mojang.minecraft.renderer.Textures;
 import org.lwjgl.opengl.GL11;
 
 public class Item extends Entity {
+	public static final long serialVersionUID = 0L;
 	private static ItemModel[] models = new ItemModel[256];
 	private float xd;
 	private float yd;
@@ -16,6 +17,16 @@ public class Item extends Entity {
 	private int resource;
 	private int tickCount;
 	private int age = 0;
+
+	public static void initModels() {
+		for(int var0 = 0; var0 < 256; ++var0) {
+			Tile var1 = Tile.tiles[var0];
+			if(var1 != null) {
+				models[var0] = new ItemModel(var1.tex);
+			}
+		}
+
+	}
 
 	public Item(Level var1, float var2, float var3, float var4, int var5) {
 		super(var1);
@@ -85,18 +96,8 @@ public class Item extends Entity {
 
 	public void playerTouch(Player var1) {
 		if(var1.addResource(this.resource)) {
-			this.level.addEntity(new TakeItemAnim(this.level, this, var1));
+			this.level.addEntity(new TakeEntityAnim(this.level, this, var1));
 			this.remove();
-		}
-
-	}
-
-	static {
-		for(int var0 = 0; var0 < 256; ++var0) {
-			Tile var1 = Tile.tiles[var0];
-			if(var1 != null) {
-				models[var0] = new ItemModel(var1.tex);
-			}
 		}
 
 	}

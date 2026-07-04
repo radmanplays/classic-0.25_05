@@ -4,15 +4,15 @@ import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.renderer.Textures;
 
-public class TakeItemAnim extends Entity {
+public class TakeEntityAnim extends Entity {
 	private int time = 0;
-	private Item item;
+	private Entity item;
 	private Entity player;
 	private float xorg;
 	private float yorg;
 	private float zorg;
 
-	public TakeItemAnim(Level var1, Item var2, Entity var3) {
+	public TakeEntityAnim(Level var1, Entity var2, Entity var3) {
 		super(var1);
 		this.item = var2;
 		this.player = var3;

@@ -41,6 +41,15 @@ public class Textures {
 			return var2;
 		}
 	}
+	
+	public final int loadTexture(ImageData var1) {
+		this.ib.clear();
+		GL11.glGenTextures(this.ib);
+		int var2 = this.ib.get(0);
+		this.addTexture(var1, var2);
+		this.pixelsMap.put(Integer.valueOf(var2), var1);
+		return var2;
+	}
 
 	public void addTexture(ImageData var1, int var2) {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, var2);

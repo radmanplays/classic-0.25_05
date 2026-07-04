@@ -1,7 +1,5 @@
 package com.mojang.minecraft;
 
-import com.mojang.minecraft.character.Cube;
-import com.mojang.minecraft.character.Vec3;
 import com.mojang.minecraft.gamemode.GameMode;
 import com.mojang.minecraft.gamemode.SurvivalGameMode;
 import com.mojang.minecraft.gui.ChatScreen;
@@ -12,13 +10,18 @@ import com.mojang.minecraft.gui.Gui;
 import com.mojang.minecraft.gui.PauseScreen;
 import com.mojang.minecraft.gui.Screen;
 import com.mojang.minecraft.item.Arrow;
+import com.mojang.minecraft.item.Item;
 import com.mojang.minecraft.item.Sign;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.LevelIO;
 import com.mojang.minecraft.level.levelgen.LevelGen;
 import com.mojang.minecraft.level.liquid.Liquid;
 import com.mojang.minecraft.level.tile.Tile;
+import com.mojang.minecraft.mob.Mob;
+import com.mojang.minecraft.model.Cube;
 import com.mojang.minecraft.model.HumanoidModel;
+import com.mojang.minecraft.model.ModelCache;
+import com.mojang.minecraft.model.Vec3;
 import com.mojang.minecraft.particle.ParticleEngine;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.player.Inventory;
@@ -31,11 +34,11 @@ import com.mojang.minecraft.renderer.GameRenderer;
 import com.mojang.minecraft.renderer.LevelRenderer;
 import com.mojang.minecraft.renderer.Tesselator;
 import com.mojang.minecraft.renderer.Textures;
+import com.mojang.minecraft.renderer.TileRenderer;
 import com.mojang.minecraft.renderer.texture.DynamicTexture;
 import com.mojang.minecraft.renderer.texture.LavaTexture;
 import com.mojang.minecraft.renderer.texture.WaterTexture;
 import com.mojang.minecraft.sound.SoundManager;
-import com.mojang.minecraft.tilerenderer.TileRenderer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -176,7 +179,7 @@ public final class Minecraft implements Runnable {
 				this.height = Display.getHeight();
 			}
 
-			Display.setTitle("Minecraft 0.24_SURVIVAL_TEST_03");
+			Display.setTitle("Minecraft 0.25_05   SURVIVAL TEST");
 
 			Display.create();
 			Keyboard.create();
@@ -203,6 +206,8 @@ public final class Minecraft implements Runnable {
 			IntBuffer var8 = GLAllocation.createIntBuffer(256);
 			var8.clear().limit(256);
 			this.levelRenderer = new LevelRenderer(this, this.textures);
+			Item.initModels();
+			Mob.modelCache = new ModelCache();
 			GL11.glViewport(0, 0, this.width, this.height);
 			if(this.server != null && this.user != null) {
 				this.level = null;
@@ -211,8 +216,7 @@ public final class Minecraft implements Runnable {
 
 				try {
 					Level var10 = null;
-					//disable 0.24 level saving to make it accurate to the original where it regenerated every time
-//					var10 = var4.levelIo.load(new VFile2("level.dat"));
+					var10 = var4.levelIo.load(new VFile2("level.dat"));
 					var9 = var10 != null;
 					if(var9) {
 						var4.loadLegacy(var10);
@@ -547,6 +551,8 @@ public final class Minecraft implements Runnable {
 //										GL11.glDisable(GL11.GL_LIGHTING);
 										GL11.glDisable(GL11.GL_ALPHA_TEST);
 										var59.renderHit(var79.minecraft.hitResult, 0, var5.inventory.getSelected());
+										HitResult var105 = var79.minecraft.hitResult;
+										var5.inventory.getSelected();
 										boolean var89 = false;
 										HitResult var80 = var79.minecraft.hitResult;
 										GL11.glEnable(GL11.GL_BLEND);
@@ -653,13 +659,11 @@ public final class Minecraft implements Runnable {
 										GL11.glScalef(1.0F, 1.0F, 1.0F);
 										var24 = 1.0F / 16.0F;
 										Cube var100 = var97.minecraft.player.getModel().leftArm;
-										if(!var100.isHidden) {
-											if(!var100.compiled) {
-												var100.translateTo(var24);
-											}
-
-											GL11.glCallList(var100.list);
+										if(!var100.compiled) {
+											var100.translateTo(var24);
 										}
+
+										GL11.glCallList(var100.list);
 									}
 
 									GL11.glDisable(GL11.GL_NORMALIZE);
@@ -766,9 +770,11 @@ public final class Minecraft implements Runnable {
 
 		if(this.hitResult != null) {
 			if(this.hitResult.type == 1) {
-				this.hitResult.entity.hurt(this.player, 4);
-			} else {
-				if(this.hitResult.type == 0) {
+				if(var1 == 0) {
+					this.hitResult.entity.hurt(this.player, 4);
+					return;
+				}
+			} else if(this.hitResult.type == 0){
 					var2 = this.hitResult.x;
 					int var3 = this.hitResult.y;
 					int var4 = this.hitResult.z;
@@ -826,7 +832,6 @@ public final class Minecraft implements Runnable {
 							}
 						}
 					}
-				}
 
 			}
 		}
@@ -898,11 +903,7 @@ public final class Minecraft implements Runnable {
 								var17 = Tile.dirt.id;
 							}
 
-							Inventory var24 = this.player.inventory;
-							var41 = var24.containsTileAt(var17);
-							if(var41 >= 0) {
-								var24.selected = var41;
-							}
+							this.player.inventory.grabTexture(var17);
 						}
 					}
 				}
@@ -935,7 +936,7 @@ public final class Minecraft implements Runnable {
 								var4 = this.hitResult.x;
 								var41 = this.hitResult.y;
 								var46 = this.hitResult.z;
-								this.gamemode.stopDestroyBlock(var4, var41, var46, this.hitResult.f);
+								this.gamemode.stopDestroyingBlock(var4, var41, var46, this.hitResult.f);
 							} else {
 								this.gamemode.tick();
 							}
@@ -955,11 +956,12 @@ public final class Minecraft implements Runnable {
 						}
 
 						if(Keyboard.getEventKey() == this.options.build.key && true) {
-							this.level.addEntity(new Sign(this, this.player.x, this.player.y, this.player.z, this.player.yRot));
+							this.level.addEntity(new Sign(this.level, this.player.x, this.player.y, this.player.z, this.player.yRot));
 						}
 
-						if(Keyboard.getEventKey() == Keyboard.KEY_TAB && true) {
-							this.level.addEntity(new Arrow(this, this.player, this.player.x, this.player.y, this.player.z, this.player.yRot, this.player.xRot));
+						if(Keyboard.getEventKey() == Keyboard.KEY_TAB && true && this.player.arrows > 0) {
+							this.level.addEntity(new Arrow(this.level, this.player, this.player.x, this.player.y, this.player.z, this.player.yRot, this.player.xRot, 1.2F));
+							--this.player.arrows;
 						}
 
 						Keyboard.getEventKey();
@@ -1056,6 +1058,7 @@ public final class Minecraft implements Runnable {
 //		}
 
 		this.level = var1;
+		var1.font = this.font;
 		if(var1 != null) {
 			var1.rendererContext = this;
 		}
@@ -1079,8 +1082,12 @@ public final class Minecraft implements Runnable {
 			var4.particles.clear();
 		}
 
-		this.player = new Player(var1, new KeyboardInput(this.options));
-		this.player.resetPos();
+		this.player = var1.findPlayer();
+		if(this.player == null) {
+			this.player = new Player(var1);
+			this.player.resetPos();
+		}
+		this.player.input = new KeyboardInput(this.options);
 		var1.player = this.player;
 		System.gc();
 	}

@@ -441,7 +441,7 @@ public class Tile {
 	public void onTileRemoved(Level var1, int var2, int var3, int var4) {
 	}
 
-	public int getResourceCount() {
+	public int resourceCount() {
 		return 1;
 	}
 
@@ -458,7 +458,7 @@ public class Tile {
 	}
 
 	public void wasExploded(Level var1, int var2, int var3, int var4, float var5) {
-		int var6 = this.getResourceCount();
+		int var6 = this.resourceCount();
 
 		for(int var7 = 0; var7 < var6; ++var7) {
 			if(random.nextFloat() <= var5) {

@@ -7,8 +7,8 @@ import net.lax1dude.eaglercraft.Random;
 public final class CalmLiquidTile extends LiquidTile {
 	protected CalmLiquidTile(int var1, Liquid var2) {
 		super(var1, var2);
-		this.tileId = var1 - 1;
-		this.calmTileId = var1;
+		this.tileID = var1 - 1;
+		this.calmTileID = var1;
 		this.setTicking(false);
 	}
 
@@ -46,8 +46,8 @@ public final class CalmLiquidTile extends LiquidTile {
 		}
 
 		if(var6) {
-			var1.setTileNoUpdate(var2, var3, var4, this.tileId);
-			var1.addToTickNextTick(var2, var3, var4, this.tileId);
+			var1.setTileNoUpdate(var2, var3, var4, this.tileID);
+			var1.addToTickNextTick(var2, var3, var4, this.tileID);
 		}
 
 	}

@@ -1,4 +1,4 @@
-package com.mojang.minecraft.character;
+package com.mojang.minecraft.model;
 
 public final class Vertex {
 	public Vec3 pos;

@@ -1,7 +1,5 @@
 package com.mojang.minecraft.model;
 
-import com.mojang.minecraft.character.Cube;
-
 public final class SkeletonModel extends ZombieModel {
 	public SkeletonModel() {
 		this.rightArm = new Cube(40, 16);

@@ -1,7 +1,5 @@
 package com.mojang.minecraft.model;
 
-import com.mojang.minecraft.character.Cube;
-
 public class HumanoidModel extends BaseModel {
 	public Cube head;
 	public Cube hair;

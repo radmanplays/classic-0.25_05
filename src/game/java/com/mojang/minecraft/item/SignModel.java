@@ -1,6 +1,6 @@
 package com.mojang.minecraft.item;
 
-import com.mojang.minecraft.character.Cube;
+import com.mojang.minecraft.model.Cube;
 
 public final class SignModel {
 	public Cube signBoard = new Cube(0, 0);

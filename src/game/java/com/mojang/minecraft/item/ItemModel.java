@@ -1,8 +1,8 @@
 package com.mojang.minecraft.item;
 
-import com.mojang.minecraft.character.Cube;
-import com.mojang.minecraft.character.Polygon;
-import com.mojang.minecraft.character.Vertex;
+import com.mojang.minecraft.model.Cube;
+import com.mojang.minecraft.model.Polygon;
+import com.mojang.minecraft.model.Vertex;
 
 public final class ItemModel {
 	private Cube cube = new Cube(0, 0);

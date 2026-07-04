@@ -1,4 +1,4 @@
-package com.mojang.minecraft.character;
+package com.mojang.minecraft.model;
 
 public final class Polygon {
 	public Vertex[] vertices;

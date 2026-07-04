@@ -1,4 +1,4 @@
-package com.mojang.minecraft.tilerenderer;
+package com.mojang.minecraft.renderer;
 
 import com.mojang.minecraft.Minecraft;
 import com.mojang.minecraft.level.tile.Tile;

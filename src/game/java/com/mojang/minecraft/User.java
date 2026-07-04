@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class User {
-	private static List creativeTiles;
+	public static List creativeTiles;
 	public String name;
 	public String sessionId;
 

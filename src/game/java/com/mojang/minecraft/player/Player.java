@@ -3,32 +3,48 @@ package com.mojang.minecraft.player;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.mob.Mob;
+import com.mojang.minecraft.mob.ai.BasicAI;
 import com.mojang.minecraft.model.HumanoidModel;
-import com.mojang.minecraft.model.PlayerModel;
 import com.mojang.minecraft.renderer.Textures;
+
+import net.lax1dude.eaglercraft.opengl.ImageData;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.List;
+import org.lwjgl.opengl.GL11;
 
 public class Player extends Mob {
+	public static final long serialVersionUID = 0L;
 	public static final int MAX_HEALTH = 20;
-	private Input input;
+	public static final int MAX_ARROWS = 99;
+	public transient Input input;
 	public Inventory inventory = new Inventory();
 	public byte userType = 0;
 	public float oBob;
 	public float bob;
 	public int score = 0;
+	public int arrows = 20;
+	private static int texture = -1;
+	public static ImageData newTexture;
 
-	public Player(Level var1, Input var2) {
+	public Player(Level var1) {
 		super(var1);
 		var1.player = this;
 		var1.removeEntity(this);
 		var1.addEntity(this);
-		System.out.println(var1.player);
 		this.heightOffset = 1.62F;
-		this.input = var2;
 		this.health = 20;
-		this.model = new PlayerModel();
+		this.modelName = "humanoid";
 		this.rotOffs = 180.0F;
-		this.ai = new PlayerInput(this, var2);
+		this.ai = new BasicAI() {
+			protected final void update() {
+				this.jumping = Player.this.input.jumping;
+				this.xxa = Player.this.input.ya;
+				this.yya = Player.this.input.xa;
+			}
+		};
 	}
 
 	public void resetPos() {
@@ -41,38 +57,32 @@ public class Player extends Mob {
 	}
 
 	public void aiStep() {
-		Inventory var1 = this.inventory;
-
-		int var2;
-		for(var2 = 0; var2 < var1.popTime.length; ++var2) {
-			if(var1.popTime[var2] > 0) {
-				--var1.popTime[var2];
-			}
-		}
-
+		this.inventory.tick();
 		this.oBob = this.bob;
 		this.input.tick();
 		super.aiStep();
-		float var3 = (float)Math.sqrt((double)(this.xd * this.xd + this.zd * this.zd));
-		float var4 = (float)Math.atan((double)(-this.yd * 0.2F)) * 15.0F;
-		if(var3 > 0.1F) {
-			var3 = 0.1F;
+		float var1 = (float)Math.sqrt((double)(this.xd * this.xd + this.zd * this.zd));
+		float var2 = (float)Math.atan((double)(-this.yd * 0.2F)) * 15.0F;
+		if(var1 > 0.1F) {
+			var1 = 0.1F;
 		}
 
 		if(!this.onGround || this.health <= 0) {
-			var3 = 0.0F;
+			var1 = 0.0F;
 		}
 
 		if(this.onGround || this.health <= 0) {
-			var4 = 0.0F;
+			var2 = 0.0F;
 		}
 
-		this.bob += (var3 - this.bob) * 0.4F;
-		this.tilt += (var4 - this.tilt) * 0.8F;
-		List var5 = this.level.findEntities(this, this.bb.grow(1.0F, 0.0F, 1.0F));
-		if(var5 != null) {
-			for(var2 = 0; var2 < var5.size(); ++var2) {
-				((Entity)var5.get(var2)).playerTouch(this);
+		this.bob += (var1 - this.bob) * 0.4F;
+		this.tilt += (var2 - this.tilt) * 0.8F;
+		if(this.health > 0) {
+			List var3 = this.level.findEntities(this, this.bb.grow(1.0F, 0.0F, 1.0F));
+			if(var3 != null) {
+				for(int var4 = 0; var4 < var3.size(); ++var4) {
+					((Entity)var3.get(var4)).playerTouch(this);
+				}
 			}
 		}
 
@@ -90,22 +100,7 @@ public class Player extends Mob {
 	}
 
 	public boolean addResource(int var1) {
-		Inventory var3 = this.inventory;
-		int var2 = var3.containsTileAt(var1);
-		if(var2 < 0) {
-			var2 = var3.containsTileAt(-1);
-		}
-
-		if(var2 < 0) {
-			return false;
-		} else if(var3.count[var2] >= 99) {
-			return false;
-		} else {
-			var3.slots[var2] = var1;
-			++var3.count[var2];
-			var3.popTime[var2] = 5;
-			return true;
-		}
+		return this.inventory.addResource(var1);
 	}
 
 	public int getScore() {
@@ -113,7 +108,7 @@ public class Player extends Mob {
 	}
 
 	public HumanoidModel getModel() {
-		return (HumanoidModel)this.model;
+		return (HumanoidModel)modelCache.getModel(this.modelName);
 	}
 
 	public void die(Entity var1) {
@@ -135,5 +130,44 @@ public class Player extends Mob {
 
 	public void awardKillScore(Entity var1, int var2) {
 		this.score += var2;
+	}
+
+	public boolean isShootable() {
+		return true;
+	}
+
+	public void bindTexture(Textures var1) {
+		if(newTexture != null) {
+			texture = var1.loadTexture(newTexture);
+			newTexture = null;
+		}
+
+		if(texture < 0) {
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, var1.loadTexture("/char.png"));
+		} else {
+			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
+		}
+	}
+	
+	public void writeTo(DataOutputStream out) throws IOException {
+		super.writeTo(out);
+		out.writeInt(this.health);
+		out.writeInt(this.score);
+		out.writeInt(this.arrows);
+		for(int i = 0; i < 9; ++i) {
+			out.writeInt(this.inventory.slots[i]);
+			out.writeInt(this.inventory.count[i]);
+		}
+	}
+
+	public void readFrom(DataInputStream in) throws IOException {
+		super.readFrom(in);
+		this.health = in.readInt();
+		this.score = in.readInt();
+		this.arrows = in.readInt();
+		for(int i = 0; i < 9; ++i) {
+			this.inventory.slots[i] = in.readInt();
+			this.inventory.count[i] = in.readInt();
+		}
 	}
 }

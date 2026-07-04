@@ -1,6 +1,6 @@
 package com.mojang.minecraft.phys;
 
-import com.mojang.minecraft.character.Vec3;
+import com.mojang.minecraft.model.Vec3;
 import java.io.Serializable;
 import org.lwjgl.opengl.GL11;
 

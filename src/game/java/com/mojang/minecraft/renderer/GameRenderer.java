@@ -1,12 +1,12 @@
 package com.mojang.minecraft.renderer;
 
 import com.mojang.minecraft.Minecraft;
-import com.mojang.minecraft.character.Vec3;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.Liquid;
 import com.mojang.minecraft.level.tile.Tile;
+import com.mojang.minecraft.model.Vec3;
 import com.mojang.minecraft.player.Player;
-import com.mojang.minecraft.tilerenderer.TileRenderer;
+
 import org.lwjgl.opengl.GL11;
 import com.mojang.util.GLAllocation;
 import com.mojang.util.Vec3D_112;

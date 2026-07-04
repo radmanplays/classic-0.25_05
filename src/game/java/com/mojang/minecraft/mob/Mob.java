@@ -5,12 +5,15 @@ import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.mob.ai.AI;
 import com.mojang.minecraft.mob.ai.BasicAI;
 import com.mojang.minecraft.model.BaseModel;
+import com.mojang.minecraft.model.ModelCache;
 import com.mojang.minecraft.renderer.Textures;
 import org.lwjgl.opengl.GL11;
 
 public class Mob extends Entity {
+	public static final long serialVersionUID = 0L;
 	public static final int ATTACK_DURATION = 5;
 	public static final int TOTAL_AIR_SUPPLY = 300;
+	public static ModelCache modelCache;
 	public int invulnerableDuration = 30;
 	public float rot;
 	public float timeOffs;
@@ -26,8 +29,8 @@ public class Mob extends Entity {
 	public boolean hasHair = true;
 	protected String textureName = "/char.png";
 	public boolean allowAlpha = true;
-	public BaseModel model = null;
 	public float rotOffs = 0.0F;
+	public String modelName = null;
 	public int health = 20;
 	public int lastHealth;
 	public int invulnerableTime = 0;
@@ -198,7 +201,7 @@ public class Mob extends Entity {
 	}
 
 	public void render(Textures var1, float var2) {
-		if(this.model != null) {
+		if(this.modelName != null) {
 			float var3 = (float)this.attackTime - var2;
 			if(var3 < 0.0F) {
 				var3 = 0.0F;
@@ -249,7 +252,7 @@ public class Mob extends Entity {
 					var11 = (float)Math.sin((double)(var11 * var11 * var11 * var11) * Math.PI) * 14.0F;
 				}
 
-				float var12;
+				float var12 = 0.0F;
 				if(this.health <= 0) {
 					var12 = ((float)this.deathTime + var2) / 20.0F;
 					var11 += var12 * var12 * 800.0F;
@@ -279,7 +282,8 @@ public class Mob extends Entity {
 			}
 
 			GL11.glScalef(-1.0F, 1.0F, 1.0F);
-			this.model.rot = var3 / 5.0F;
+			BaseModel var13 = modelCache.getModel(this.modelName);
+			var13.rot = var3 / 5.0F;
 			GL11.glEnable(GL11.GL_TEXTURE_2D);
 			this.bindTexture(var1);
 			this.renderModel(var1, var8, var2, var5, var6, var7, var9);
@@ -290,6 +294,7 @@ public class Mob extends Entity {
 				this.bindTexture(var1);
 				this.renderModel(var1, var8, var2, var5, var6, var7, var9);
 				GL11.glDisable(GL11.GL_BLEND);
+				GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 			}
 
 			GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -305,7 +310,8 @@ public class Mob extends Entity {
 	}
 
 	public void renderModel(Textures var1, float var2, float var3, float var4, float var5, float var6, float var7) {
-		this.model.render(var2, var4, (float)this.tickCount + var3, var5, var6, var7);
+		BaseModel var8 = modelCache.getModel(this.modelName);
+		var8.render(var2, var4, (float)this.tickCount + var3, var5, var6, var7);
 	}
 
 	public void heal(int var1) {
@@ -321,6 +327,7 @@ public class Mob extends Entity {
 
 	public void hurt(Entity var1, int var2) {
 		if(this.health > 0) {
+			this.ai.hurt(var1, var2);
 			if((float)this.invulnerableTime > (float)this.invulnerableDuration / 2.0F) {
 				if(this.lastHealth - var2 >= this.health) {
 					return;

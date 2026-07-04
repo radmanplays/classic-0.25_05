@@ -8,8 +8,8 @@ import net.lax1dude.eaglercraft.Random;
 
 public class LiquidTile extends Tile {
 	protected Liquid liquid;
-	protected int calmTileId;
-	protected int tileId;
+	protected int calmTileID;
+	protected int tileID;
 
 	protected LiquidTile(int var1, Liquid var2) {
 		super(var1);
@@ -20,8 +20,8 @@ public class LiquidTile extends Tile {
 		}
 
 		Tile.isLiquid[var1] = true;
-		this.tileId = var1;
-		this.calmTileId = var1 + 1;
+		this.tileID = var1;
+		this.calmTileID = var1 + 1;
 		float var4 = 0.01F;
 		float var3 = 0.1F;
 		this.setShape(var4 + 0.0F, 0.0F - var3 + var4, var4 + 0.0F, var4 + 1.0F, 1.0F - var3 + var4, var4 + 1.0F);
@@ -37,7 +37,7 @@ public class LiquidTile extends Tile {
 	}
 
 	public final void onPlace(Level var1, int var2, int var3, int var4) {
-		var1.addToTickNextTick(var2, var3, var4, this.tileId);
+		var1.addToTickNextTick(var2, var3, var4, this.tileID);
 	}
 
 	public void tick(Level var1, int var2, int var3, int var4, Random var5) {
@@ -56,7 +56,7 @@ public class LiquidTile extends Tile {
 				break;
 			}
 
-			var6 = var1.setTile(var2, var3, var4, var8.tileId);
+			var6 = var1.setTile(var2, var3, var4, var8.tileID);
 			if(var6) {
 				var9 = true;
 			}
@@ -71,9 +71,9 @@ public class LiquidTile extends Tile {
 		}
 
 		if(!var9) {
-			var1.setTileNoUpdate(var2, var3, var4, var8.calmTileId);
+			var1.setTileNoUpdate(var2, var3, var4, var8.calmTileID);
 		} else {
-			var1.addToTickNextTick(var2, var3, var4, var8.tileId);
+			var1.addToTickNextTick(var2, var3, var4, var8.tileID);
 		}
 
 	}
@@ -101,9 +101,9 @@ public class LiquidTile extends Tile {
 				return false;
 			}
 
-			boolean var6 = var1.setTile(var2, var3, var4, this.tileId);
+			boolean var6 = var1.setTile(var2, var3, var4, this.tileID);
 			if(var6) {
-				var1.addToTickNextTick(var2, var3, var4, this.tileId);
+				var1.addToTickNextTick(var2, var3, var4, this.tileID);
 			}
 		}
 
@@ -120,7 +120,7 @@ public class LiquidTile extends Tile {
 				return false;
 			} else {
 				var5 = var1.getTile(var2, var3, var4);
-				return var5 != this.tileId && var5 != this.calmTileId ? (var6 != 1 || var1.getTile(var2 - 1, var3, var4) != 0 && var1.getTile(var2 + 1, var3, var4) != 0 && var1.getTile(var2, var3, var4 - 1) != 0 && var1.getTile(var2, var3, var4 + 1) != 0 ? super.shouldRenderFace(var1, var2, var3, var4, -1, var6) : true) : false;
+				return var5 != this.tileID && var5 != this.calmTileID ? (var6 != 1 || var1.getTile(var2 - 1, var3, var4) != 0 && var1.getTile(var2 + 1, var3, var4) != 0 && var1.getTile(var2, var3, var4 - 1) != 0 && var1.getTile(var2, var3, var4 + 1) != 0 ? super.shouldRenderFace(var1, var2, var3, var4, -1, var6) : true) : false;
 			}
 		} else {
 			return false;
@@ -170,7 +170,7 @@ public class LiquidTile extends Tile {
 	public final void spawnResources(Level var1, int var2, int var3, int var4) {
 	}
 
-	public final int getResourceCount() {
+	public final int resourceCount() {
 		return 0;
 	}
 }

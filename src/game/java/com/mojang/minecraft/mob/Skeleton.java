@@ -1,16 +1,46 @@
 package com.mojang.minecraft.mob;
 
+import com.mojang.minecraft.item.Arrow;
 import com.mojang.minecraft.level.Level;
-import com.mojang.minecraft.model.HumanoidModel;
-import com.mojang.minecraft.model.SkeletonModel;
+import com.mojang.minecraft.mob.ai.BasicAttackAI;
 
 public class Skeleton extends Zombie {
-	private static HumanoidModel skeletonModel = new SkeletonModel();
+	public static final long serialVersionUID = 0L;
 
 	public Skeleton(Level var1, float var2, float var3, float var4) {
 		super(var1, var2, var3, var4);
-		this.model = this.humanoidModel = skeletonModel;
+		this.modelName = "skeleton";
 		this.textureName = "/mob/skeleton.png";
+		BasicAttackAI var5 = new BasicAttackAI() {
+			public final void tick(Level var1, Mob var2) {
+				super.tick(var1, var2);
+				if(var2.health > 0 && this.random.nextInt(30) == 0 && this.attackTarget != null) {
+					Skeleton.this.shootArrow(var1);
+				}
+
+			}
+
+			public final void beforeRemove() {
+				Skeleton.access$000(Skeleton.this);
+			}
+		};
+		var5.runSpeed = 0.3F;
+		var5.damage = 8;
+		this.ai = var5;
 		allowAlpha = true;
+	}
+
+	public void shootArrow(Level var1) {
+		var1.addEntity(new Arrow(var1, this, this.x, this.y, this.z, this.yRot + 180.0F + (float)(Math.random() * 45.0D - 22.5D), this.xRot - (float)(Math.random() * 45.0D - 10.0D), 1.0F));
+	}
+
+	static void access$000(Skeleton var0) {
+		var0 = var0;
+		int var1 = (int)((Math.random() + Math.random()) * 3.0D + 4.0D);
+
+		for(int var2 = 0; var2 < var1; ++var2) {
+			var0.level.addEntity(new Arrow(var0.level, var0.level.getPlayer(), var0.x, var0.y - 0.2F, var0.z, (float)Math.random() * 360.0F, -((float)Math.random()) * 60.0F, 0.4F));
+		}
+
 	}
 }

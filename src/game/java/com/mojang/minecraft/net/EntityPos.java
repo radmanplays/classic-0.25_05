@@ -1,6 +1,6 @@
 package com.mojang.minecraft.net;
 
-public final class PlayerPos {
+public final class EntityPos {
 	public float x;
 	public float y;
 	public float z;
@@ -9,7 +9,7 @@ public final class PlayerPos {
 	public boolean rotating = false;
 	public boolean moving = false;
 
-	public PlayerPos(float var1, float var2, float var3, float var4, float var5) {
+	public EntityPos(float var1, float var2, float var3, float var4, float var5) {
 		this.x = var1;
 		this.y = var2;
 		this.z = var3;
@@ -19,7 +19,7 @@ public final class PlayerPos {
 		this.moving = true;
 	}
 
-	public PlayerPos(float var1, float var2, float var3) {
+	public EntityPos(float var1, float var2, float var3) {
 		this.x = var1;
 		this.y = var2;
 		this.z = var3;
@@ -27,7 +27,7 @@ public final class PlayerPos {
 		this.rotating = false;
 	}
 
-	public PlayerPos(float var1, float var2) {
+	public EntityPos(float var1, float var2) {
 		this.yRot = var1;
 		this.xRot = var2;
 		this.rotating = true;

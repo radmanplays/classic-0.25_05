@@ -5,8 +5,8 @@ public final class LeafTile extends BaseLeafTile {
 		super(18, 22, true);
 	}
 
-	public final int getResourceCount() {
-		return random.nextInt(6) == 0 ? 1 : 0;
+	public final int resourceCount() {
+		return random.nextInt(10) == 0 ? 1 : 0;
 	}
 
 	public final int getId() {

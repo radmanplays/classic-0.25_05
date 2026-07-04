@@ -1,4 +1,4 @@
-package com.mojang.minecraft.character;
+package com.mojang.minecraft.model;
 
 import org.lwjgl.opengl.GL11;
 
@@ -17,7 +17,7 @@ public final class Cube {
 	public int list = 0;
 	public boolean mirror = false;
 	public boolean showModel = true;
-	public boolean isHidden = false;
+	private boolean isHidden = false;
 
 	public Cube(int var1, int var2) {
 		this.xTexOffs = var1;
@@ -86,21 +86,19 @@ public final class Cube {
 	}
 
 	public final void render(float var1) {
-		if(!this.isHidden) {
-			if(this.showModel) {
-				if(!this.compiled) {
-					this.translateTo(var1);
-				}
-
-				float var2 = 57.29578F;
-				GL11.glPushMatrix();
-				GL11.glTranslatef(this.x * var1, this.y * var1, this.z * var1);
-				GL11.glRotatef(this.zRot * var2, 0.0F, 0.0F, 1.0F);
-				GL11.glRotatef(this.yRot * var2, 0.0F, 1.0F, 0.0F);
-				GL11.glRotatef(this.xRot * var2, 1.0F, 0.0F, 0.0F);
-				GL11.glCallList(this.list);
-				GL11.glPopMatrix();
+		if(this.showModel) {
+			if(!this.compiled) {
+				this.translateTo(var1);
 			}
+
+			float var2 = 57.29578F;
+			GL11.glPushMatrix();
+			GL11.glTranslatef(this.x * var1, this.y * var1, this.z * var1);
+			GL11.glRotatef(this.zRot * var2, 0.0F, 0.0F, 1.0F);
+			GL11.glRotatef(this.yRot * var2, 0.0F, 1.0F, 0.0F);
+			GL11.glRotatef(this.xRot * var2, 1.0F, 0.0F, 0.0F);
+			GL11.glCallList(this.list);
+			GL11.glPopMatrix();
 		}
 	}
 

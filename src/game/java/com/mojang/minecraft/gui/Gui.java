@@ -154,11 +154,14 @@ public final class Gui extends GuiComponent {
 			}
 		}
 
-		var5.drawShadow("0.24_SURVIVAL_TEST_03", 2, 2, 16777215);
+		var5.drawShadow("0.25_05   SURVIVAL TEST", 2, 2, 16777215);
 		if(this.minecraft.options.showFramerate) {
 			var5.drawShadow(this.minecraft.fpsString, 2, 12, 16777215);
 		}
 
+		String score = "Score: &e" + this.minecraft.player.getScore();
+		var5.drawShadow(score, this.scaledWidth - var5.width(score) - 2, 2, 16777215);
+		var5.drawShadow("Arrows: " + this.minecraft.player.arrows, this.scaledWidth / 2 + 8, this.scaledHeight - 33, 16777215);
 		byte var24 = 10;
 		boolean var26 = false;
 		if(this.minecraft.screen instanceof ChatScreen) {

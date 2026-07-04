@@ -1,6 +1,6 @@
 package com.mojang.minecraft;
 
-import com.mojang.minecraft.character.Vec3;
+import com.mojang.minecraft.model.Vec3;
 
 public final class HitResult {
 	public int type;

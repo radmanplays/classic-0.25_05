@@ -36,7 +36,7 @@ public class GameMode {
 
 	}
 
-	public void stopDestroyBlock(int var1, int var2, int var3, int var4) {
+	public void stopDestroyingBlock(int var1, int var2, int var3, int var4) {
 	}
 
 	public void tick() {

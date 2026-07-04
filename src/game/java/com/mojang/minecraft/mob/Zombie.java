@@ -3,19 +3,19 @@ package com.mojang.minecraft.mob;
 import com.mojang.minecraft.Entity;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.mob.ai.BasicAttackAI;
-import com.mojang.minecraft.model.HumanoidModel;
-import com.mojang.minecraft.model.ZombieModel;
 
 public class Zombie extends HumanoidMob {
-	private static HumanoidModel ZOMBIE_MODEL = new ZombieModel();
+	public static final long serialVersionUID = 0L;
 
 	public Zombie(Level var1, float var2, float var3, float var4) {
 		super(var1, var2, var3, var4);
-		this.model = this.humanoidModel = ZOMBIE_MODEL;
+		this.modelName = "zombie";
 		this.textureName = "/mob/zombie.png";
 		this.heightOffset = 1.62F;
-		this.ai = new BasicAttackAI();
-		this.ai.defaultLookAngle = 30;
+		BasicAttackAI var5 = new BasicAttackAI();
+		var5.defaultLookAngle = 30;
+		var5.runSpeed = 1.0F;
+		this.ai = var5;
 	}
 
 	public void die(Entity var1) {

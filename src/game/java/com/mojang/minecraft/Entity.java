@@ -4,10 +4,14 @@ import com.mojang.minecraft.level.BlockMap;
 import com.mojang.minecraft.level.Level;
 import com.mojang.minecraft.level.liquid.Liquid;
 import com.mojang.minecraft.level.tile.Tile;
-import com.mojang.minecraft.net.PlayerPos;
+import com.mojang.minecraft.net.EntityPos;
 import com.mojang.minecraft.phys.AABB;
 import com.mojang.minecraft.player.Player;
 import com.mojang.minecraft.renderer.Textures;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -78,7 +82,7 @@ public class Entity implements Serializable {
 		this.bbHeight = var2;
 	}
 
-	public void setPos(PlayerPos var1) {
+	public void setPos(EntityPos var1) {
 		if(var1.moving) {
 			this.setPos(var1.x, var1.y, var1.z);
 		} else {
@@ -332,13 +336,13 @@ public class Entity implements Serializable {
 			var3 /= var4;
 			var2 *= 0.05F;
 			var3 *= 0.05F;
-			this.pushEntity(-var2, 0.0F, -var3);
-			var1.pushEntity(var2, 0.0F, var3);
+			this.push(-var2, 0.0F, -var3);
+			var1.push(var2, 0.0F, var3);
 		}
 
 	}
 
-	protected void pushEntity(float var1, float var2, float var3) {
+	protected void push(float var1, float var2, float var3) {
 		this.xd += var1;
 		this.yd += var2;
 		this.zd += var3;
@@ -364,5 +368,28 @@ public class Entity implements Serializable {
 	}
 
 	public void awardKillScore(Entity var1, int var2) {
+	}
+	
+	public void writeTo(DataOutputStream out) throws IOException {
+		out.writeFloat(this.x);
+		out.writeFloat(this.y);
+		out.writeFloat(this.z);
+		out.writeFloat(this.yRot);
+		out.writeFloat(this.xRot);
+		out.writeFloat(this.xd);
+		out.writeFloat(this.yd);
+		out.writeFloat(this.zd);
+	}
+
+	public void readFrom(DataInputStream in) throws IOException {
+		this.x = in.readFloat();
+		this.y = in.readFloat();
+		this.z = in.readFloat();
+		this.yRot = in.readFloat();
+		this.xRot = in.readFloat();
+		this.xd = in.readFloat();
+		this.yd = in.readFloat();
+		this.zd = in.readFloat();
+		this.setPos(this.x, this.y, this.z);
 	}
 }
