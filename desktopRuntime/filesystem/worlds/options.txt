@@ -1,0 +1,17 @@
+music:true
+sound:true
+invertYMouse:false
+showFrameRate:true
+viewDistance:1
+bobView:true
+anaglyph3d:false
+key_Forward:200
+key_Left:203
+key_Back:208
+key_Right:205
+key_Jump:57
+key_Build:48
+key_Chat:20
+key_Toggle fog:33
+key_Save location:28
+key_Load location:19
